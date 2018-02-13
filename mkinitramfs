@@ -72,7 +72,12 @@ maybe_add_conf() {
 	   basename "$1" \
 	   | grep '^[[:alnum:]][[:alnum:]\._-]*$' \
 	   | grep -qv '\.dpkg-.*$'; then
-		EXTRA_CONF="${EXTRA_CONF} $1"
+		if [ -d "$1" ]; then
+			echo "W: $1 is a directory instead of file" >&2
+		else
+			EXTRA_CONF="${EXTRA_CONF} $1"
+			. "$1"
+		fi
 	fi
 }
 for i in /usr/share/initramfs-tools/conf.d/*; do
@@ -83,14 +88,6 @@ for i in /usr/share/initramfs-tools/conf.d/*; do
 done
 for i in "${CONFDIR}"/conf.d/*; do
 	maybe_add_conf "${i}"
-done
-
-for i in ${EXTRA_CONF}; do
-	if [ -d "${i}" ]; then
-		echo "W: ${i} is a directory instead of file" >&2
-	else
-		. "${i}"
-	fi
 done
 
 # source package confs
