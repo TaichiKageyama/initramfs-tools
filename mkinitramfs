@@ -152,7 +152,14 @@ if ! command -v "${compress}" >/dev/null 2>&1; then
 fi
 
 case "${compress}" in
-gzip)	[ -n "${SOURCE_DATE_EPOCH}" ] && compress="gzip -n" ;;
+gzip)	# If we're doing a reproducible build, use gzip -n
+	if [ -n "${SOURCE_DATE_EPOCH}" ]; then
+		compress="gzip -n"
+	# Otherwise, substitute pigz if it's available
+	elif command -v pigz >/dev/null; then
+		compress=pigz
+	fi
+	;;
 lz4)	compress="lz4 -9 -l" ;;
 lzop)	;;
 xz)	compress="xz --check=crc32" ;;
