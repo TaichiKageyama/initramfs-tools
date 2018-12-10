@@ -33,7 +33,7 @@ log_end_msg()
 
 panic()
 {
-	local console rest
+	local console rest IFS
 
 	if command -v chvt >/dev/null 2>&1; then
 		chvt 1
@@ -53,6 +53,7 @@ panic()
 	# Try to use setsid, which will enable job control in the shell
 	# and paging in more
 	if command -v setsid >/dev/null 2>&1; then
+		unset IFS
 		read console rest </proc/consoles
 		if [ "${console}" = "tty0" ]; then
 			# Need to choose a specific VT
