@@ -93,11 +93,6 @@ maybe_break()
 	esac
 }
 
-render()
-{
-	eval "echo -n \${$@}"
-}
-
 # For boot time only; this is overridden at build time in hook-functions
 run_scripts()
 {
