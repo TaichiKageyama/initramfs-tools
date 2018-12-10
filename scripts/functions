@@ -3,7 +3,7 @@
 _log_msg()
 {
 	if [ "${quiet?}" = "y" ]; then return; fi
-	echo -n "$*"
+	printf "%s" "$*"
 }
 
 log_success_msg()

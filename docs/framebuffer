@@ -44,19 +44,19 @@ parse_video_opts()
 	for opt in ${OPTS}; do
 		# Already in the "<arg>=<value>" form
 		if [ "${opt}" != "${opt#*=}" ]; then
-			echo -n "$opt "
+			printf "%s" "$opt "
 		# In the "<arg>:<value>" form
 		elif [ "${opt}" != "${opt#*:}" ]; then
-			echo -n "${opt%:*}=${opt#*:} "
+			printf "%s" "${opt%:*}=${opt#*:} "
 		# Presumably a modevalue without the "mode=" prefix
 		elif [ "${opt}" != "${opt#[0-9]*x[0-9]}" ]; then
 		  	# Adjust: mode= option?
-			echo -n "mode=$opt "
+			printf "%s" "mode=$opt "
 			# ... or mode_option= option?
-			# echo -n "mode_option=$opt "
+			# printf "%s" "mode_option=$opt "
 		# Presumably a boolean
 		else
-			echo -n "${opt}=1 "
+			printf "%s" "${opt}=1 "
 		fi
 	done
 }
