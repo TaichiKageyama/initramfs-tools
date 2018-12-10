@@ -15,20 +15,20 @@ prereqs)
 	;;
 esac
 
-if [ -z "${resume}" ] || [ ! -e /sys/power/resume ]; then
+if [ -z "${resume?}" ] || [ ! -e /sys/power/resume ]; then
 	exit 0
 fi
 
 . /scripts/functions
 . /scripts/local
 
-if ! local_device_setup ${resume} "suspend/resume device" false; then
+if ! local_device_setup "${resume}" "suspend/resume device" false; then
 	exit 0
 fi
 
 # hardcode path, uswsusp ships an resume binary too
-if [ -n "${resume_offset}" ]; then
-	/bin/resume ${DEV} ${resume_offset}
+if [ -n "${resume_offset?}" ]; then
+	/bin/resume "${DEV}" "${resume_offset}"
 else
-	/bin/resume ${DEV}
+	/bin/resume "${DEV}"
 fi

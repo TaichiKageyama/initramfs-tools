@@ -19,7 +19,7 @@ for x in $(cat /proc/cmdline); do
 		modprobe ata_generic all_generic_ide=1
 		;;
 	all_generic_ide=*)
-		if [ ${x#all_generic_ide=} ]; then
+		if [ -n "${x#all_generic_ide=}" ]; then
 			modprobe ata_generic all_generic_ide=1
 		fi
 		;;

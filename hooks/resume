@@ -49,7 +49,7 @@ if ! ischroot && [ -r /proc/swaps ]; then
 
 		# dm-crypt is ephemeral if the key file is /dev/urandom
 		if [ -n "$dm_name" ] && [ -e /etc/crypttab ]; then
-			while read cryptdev srcdev keyfile junk; do
+			while read -r cryptdev srcdev keyfile junk; do
 				if [ "$cryptdev" = "$dm_name" ] && [ "$keyfile" = /dev/urandom ]; then
 					ephemeral=true
 				fi
@@ -90,5 +90,5 @@ if [ "$RESUME" = auto ] || [ -n "$resume_auto" ]; then
 	if [ -z "$resume_auto" ]; then
 		echo >&2 "W: initramfs-tools failed to select a resume device"
 	fi
-	echo "RESUME=${resume_auto}" > ${DESTDIR}/conf/conf.d/zz-resume-auto
+	echo "RESUME=${resume_auto}" > "${DESTDIR}/conf/conf.d/zz-resume-auto"
 fi

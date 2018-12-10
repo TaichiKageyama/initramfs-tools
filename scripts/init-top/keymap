@@ -22,6 +22,6 @@ if [ -x /bin/kbd_mode ]; then
 fi
 
 # Load custom keymap
-if [ -x /bin/loadkeys -a -r /etc/boottime.kmap.gz ]; then
+if [ -x /bin/loadkeys ] && [ -r /etc/boottime.kmap.gz ]; then
 	loadkeys ${OPTS} /etc/boottime.kmap.gz
 fi

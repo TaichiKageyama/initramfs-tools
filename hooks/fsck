@@ -7,14 +7,6 @@ prereqs()
 	echo "$PREREQ"
 }
 
-fstab_files()
-{
-	echo /etc/fstab
-	if [ -d /etc/fstab.d ]; then
-		ls -1 /etc/fstab.d | grep '\.fstab$' | sed -e 's;^;/etc/fstab.d/;'
-	fi
-}
-
 # Find a specific fstab entry
 # $1=mountpoint
 # $2=fstype (optional)
@@ -24,9 +16,9 @@ _read_fstab_entry () {
 	echo "MNT_DIR="
 	echo "MNT_TYPE="
 
-	fstab_files | while read file; do
+	for file in /etc/fstab /etc/fstab.d/*.fstab; do
 		if [ -f "$file" ]; then
-			while read MNT_FSNAME MNT_DIR MNT_TYPE MNT_OPTS MNT_FREQ MNT_PASS MNT_JUNK; do
+			while read -r MNT_FSNAME MNT_DIR MNT_TYPE MNT_OPTS MNT_FREQ MNT_PASS MNT_JUNK; do
 				case "$MNT_FSNAME" in
 				  ""|\#*)
 					continue;
@@ -102,7 +94,7 @@ for type in $fsck_types; do
 		continue
 	fi
 
-	if prog="$(command -v fsck.${type})"; then
+	if prog="$(command -v "fsck.${type}")"; then
 		copy_exec "$prog"
 	else
 		echo "Warning: /sbin/fsck.${type} doesn't exist, can't install to initramfs, ignoring."

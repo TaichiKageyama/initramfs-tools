@@ -103,9 +103,9 @@ if [ -n "${FB}" ]; then
 fi
 
 if [ -e /proc/fb ]; then
-	while read fbno desc; do
-		if [ $(($fbno < 32)) ]; then
-			mknod -m 0640 /dev/fb${fbno} c 29 ${fbno}
+	while read -r fbno desc; do
+		if [ $((fbno < 32)) ]; then
+			mknod -m 0640 "/dev/fb${fbno}" c 29 "${fbno}"
 		fi
 	done < /proc/fb
 else
