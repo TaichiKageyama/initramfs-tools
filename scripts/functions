@@ -117,6 +117,7 @@ load_modules()
 			if [ "$com" = "#" ]; then
 				continue
 			fi
+			# shellcheck disable=SC2086
 			modprobe $m
 		done < /conf/modules
 	fi
@@ -148,6 +149,7 @@ parse_numeric() {
 		;;
 	esac
 
+	# shellcheck disable=SC2034
 	ROOT="/dev/block/${major}:${minor}"
 }
 
@@ -185,6 +187,7 @@ _handle_device_vs_ip()
 	# - Otherwise, substitute in any device name we already have
 	local IFS=:
 	set -f
+	# shellcheck disable=SC2086
 	set -- ${IP}
 	set +f
 	if [ -n "$6" ]; then
@@ -299,6 +302,7 @@ read_fstab_entry() {
 
 	for file in ${rootmnt?}/etc/fstab; do
 		if [ -f "$file" ]; then
+			# shellcheck disable=SC2034
 			while read -r MNT_FSNAME MNT_DIR MNT_TYPE MNT_OPTS MNT_FREQ MNT_PASS MNT_JUNK; do
 				case "$MNT_FSNAME" in
 				  ""|\#*)

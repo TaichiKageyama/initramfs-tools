@@ -16,6 +16,7 @@ umi_opts="--list"
 
 OPTIONS=$(getopt -o hl --long help,long -n "$0" -- "$@")
 # Check for non-GNU getopt
+# shellcheck disable=SC2181
 if [ $? != 0 ] ; then echo "W: non-GNU getopt" >&2 ; exit 1 ; fi
 
 eval set -- "$OPTIONS"

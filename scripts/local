@@ -181,8 +181,10 @@ local_mount_root()
 	# FIXME This has no error checking
 	# Mount root
 	if [ "${FSTYPE}" != "unknown" ]; then
+		# shellcheck disable=SC2086
 		mount ${roflag} -t "${FSTYPE}" ${ROOTFLAGS} "${ROOT}" "${rootmnt?}"
 	else
+		# shellcheck disable=SC2086
 		mount ${roflag} ${ROOTFLAGS} "${ROOT}" "${rootmnt}"
 	fi
 }

@@ -119,6 +119,7 @@ splitinitramfs()
 
 OPTIONS=$(getopt -o hv --long help,list,verbose -n "$0" -- "$@")
 # Check for non-GNU getopt
+# shellcheck disable=SC2181
 if [ $? != 0 ] ; then echo "W: non-GNU getopt" >&2 ; exit 1 ; fi
 
 cpio_opts="--preserve-modification-time --no-absolute-filenames --quiet"
@@ -156,4 +157,5 @@ if [ $# -ne $expected_args ]; then
 	exit 2
 fi
 
+# shellcheck disable=SC2086
 splitinitramfs "$1" "${2:-}" $cpio_opts

@@ -14,6 +14,7 @@ export BUSYBOXDIR
 OPTIONS=$(getopt -o c:d:ko:r:v -n "$0" -- "$@")
 
 # Check for non-GNU getopt
+# shellcheck disable=SC2181
 if [ $? != 0 ] ; then echo "W: non-GNU getopt" >&2 ; exit 1 ; fi
 
 eval set -- "$OPTIONS"
@@ -321,6 +322,7 @@ run_scripts /usr/share/initramfs-tools/hooks
 run_scripts "${CONFDIR}"/hooks
 
 # Avoid double sleep when using older udev scripts
+# shellcheck disable=SC2016
 sed -i 's/^\s*sleep \$ROOTDELAY$/:/' "${DESTDIR}/scripts/init-top/udev"
 
 # cache boot run order
@@ -405,6 +407,7 @@ eval "$(
 	} | {
 		LC_ALL=C sort
 	} | {
+		# shellcheck disable=SC2086
 		cpio --quiet $cpio_owner_root $cpio_reproducible -o -H newc 4>&-; echo "ec2=$?;" >&4
 	} | ${compress} >>"${outfile}"
 	echo "ec3=$?;" >&4

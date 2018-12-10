@@ -64,6 +64,7 @@ manual_add_modules()
 	# module.ko' as we want.  However it also means that 'softdep'
 	# configuration lines and embedded softdep information is not
 	# processed.  So we run twice, with and without this option.
+	# shellcheck disable=SC2034
 	{ modprobe --all --set-version="${version?}" --ignore-install --quiet --show-depends "$@";
 	  modprobe --all --set-version="${version}" --quiet --show-depends "$@"; } |
 	while read -r prefix kmod options ; do
@@ -224,9 +225,11 @@ copy_modules_dir()
 		first=false
 	done
 
+	# shellcheck disable=SC2044
 	for kmod in $(find "${MODULESDIR}/${dir}" "$@" -name '*.ko*' -printf '%f\n'); do
 		modules="$modules ${kmod%%.*}"
 	done
+	# shellcheck disable=SC2086
 	manual_add_modules $modules
 }
 
@@ -341,6 +344,7 @@ dep_add_modules_mount()
 	fi
 
 	# find out block device + fstype
+	# shellcheck disable=SC2034
 	eval "$(while read -r dev mp fs opts rest ; do \
 		[ "$mp" = "$dir" ] && [ "$fs" != "rootfs" ] \
 		&& printf "dev_node=%s\\nFSTYPE=%s" "$dev" "$fs"\
@@ -367,6 +371,7 @@ dep_add_modules_mount()
 			# Does not exist in our namespace, so look at the
 			# kernel command line
 			dev_node=
+			# shellcheck disable=SC2013
 			for arg in $(cat /proc/cmdline); do
 				case "$arg" in
 				root=*)
@@ -487,6 +492,7 @@ dep_add_modules()
 		modules="$modules sunvnet sunvdc"
 	fi
 
+	# shellcheck disable=SC2086
 	manual_add_modules $modules
 }
 
@@ -606,6 +612,7 @@ auto_add_modules()
 		esac
 	done
 
+	# shellcheck disable=SC2086
 	manual_add_modules $modules
 }
 
@@ -616,6 +623,7 @@ auto_add_modules()
 # hidden dependencies.
 hidden_dep_add_modules()
 {
+	# shellcheck disable=SC2046
 	manual_add_modules $(
 		{
 			cat "${DESTDIR}/lib/modules/${version}/modules.builtin"
