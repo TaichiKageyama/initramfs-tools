@@ -143,7 +143,7 @@ if ! command -v "${compress}" >/dev/null 2>&1; then
 fi
 
 case "${compress}" in
-gzip)	[ -n "${SOURCE_DATE_EPOCH}" ] && compress="gzip -n"
+gzip)	[ -n "${SOURCE_DATE_EPOCH}" ] && compress="gzip -n" ;;
 lz4)	compress="lz4 -9 -l" ;;
 lzop)	compress="lzop -9" ;;
 xz)	compress="xz --check=crc32" ;;
