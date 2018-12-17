@@ -4493,4 +4493,3 @@ initramfs-tools (0.1) unstable; urgency=low
   * Initial Release.
 
  -- Jeff Bailey <jbailey@ubuntu.com>  Thu, 27 Jan 2005 15:23:52 -0500
-
