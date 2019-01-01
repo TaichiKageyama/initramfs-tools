@@ -43,13 +43,15 @@ report_auto()
 # is not ephemeral.  We need to be able to read the listed swap partitions.
 resume_auto=
 if ! ischroot && [ -r /proc/swaps ]; then
+	# shellcheck disable=SC2013
 	for resume_auto in $(grep ^/dev/ /proc/swaps | sort -rnk3 | cut -d " " -f 1); do
 		ephemeral=false
 		dm_name="$(dmsetup info -c --noheadings -o name "$resume_auto" 2>/dev/null)"
 
 		# dm-crypt is ephemeral if the key file is /dev/urandom
 		if [ -n "$dm_name" ] && [ -e /etc/crypttab ]; then
-			while read cryptdev srcdev keyfile junk; do
+			# shellcheck disable=SC2034
+			while read -r cryptdev srcdev keyfile junk; do
 				if [ "$cryptdev" = "$dm_name" ] && [ "$keyfile" = /dev/urandom ]; then
 					ephemeral=true
 				fi
@@ -90,5 +92,5 @@ if [ "$RESUME" = auto ] || [ -n "$resume_auto" ]; then
 	if [ -z "$resume_auto" ]; then
 		echo >&2 "W: initramfs-tools failed to select a resume device"
 	fi
-	echo "RESUME=${resume_auto}" > ${DESTDIR}/conf/conf.d/zz-resume-auto
+	echo "RESUME=${resume_auto}" > "${DESTDIR}/conf/conf.d/zz-resume-auto"
 fi

@@ -36,7 +36,7 @@ esac
 usage()
 {
 	if [ -n "${1:-}" ]; then
-		printf "${*}\n\n" >&2
+		printf "%s\\n\\n" "${*}" >&2
 	fi
 	cat >&2 << EOF
 Usage: ${0} [OPTION]...
@@ -57,7 +57,7 @@ EOF
 mild_panic()
 {
 	if [ -n "${1:-}" ]; then
-		printf "${*}\n" >&2
+		printf "%s\\n" "${*}" >&2
 	fi
 	exit 0
 }
@@ -65,7 +65,7 @@ mild_panic()
 panic()
 {
 	if [ -n "${1:-}" ]; then
-		printf "${*}\n" >&2
+		printf "%s\\n" "${*}" >&2
 	fi
 	exit 1
 }
@@ -73,7 +73,7 @@ panic()
 verbose()
 {
 	if [ "${verbose}" = 1 ]; then
-		printf "${*}\n"
+		printf "%s\\n" "${*}"
 	fi
 }
 
@@ -119,7 +119,7 @@ backup_booted_initramfs()
 	boot_initramfs=
 	uptime_days=$(awk '{printf "%d", $1 / 3600 / 24}' /proc/uptime)
 	if [ -n "$uptime_days" ]; then
-		boot_initramfs=$(find "${initramfs}.bak" -mtime +${uptime_days})
+		boot_initramfs=$(find "${initramfs}.bak" -mtime "+${uptime_days}")
 	fi
 	if [ -n "${boot_initramfs}" ]; then
 		mv -f "${initramfs_bak}" "${initramfs}.bak"
@@ -146,6 +146,7 @@ generate_initramfs()
 	if [ "${verbose}" = 1 ]; then
 		OPTS="-v ${OPTS}"
 	fi
+	# shellcheck disable=SC2086
 	if mkinitramfs ${OPTS} "${initramfs}.new" "${version}"; then
 		mv -f "${initramfs}.new" "${initramfs}"
 		set_sha1
@@ -190,6 +191,7 @@ ro_boot_check()
 		return 0
 	fi
 
+	# shellcheck disable=SC1004
 	boot_opts=$(awk '/boot/{if ((match($4, /^ro/) || match($4, /,ro/)) \
 		&& $2 == "/boot") print "ro"}' /proc/mounts)
 	if [ -n "${boot_opts}" ]; then
@@ -203,7 +205,7 @@ get_sorted_versions()
 {
 	version_list="$(
 		linux-version list |
-		while read version; do
+		while read -r version; do
 		      test -e "${BOOTDIR}/initrd.img-$version" && echo "$version"
 		done |
 		linux-version sort --reverse
@@ -213,8 +215,8 @@ get_sorted_versions()
 
 set_current_version()
 {
-	if [ -f /boot/initrd.img-`uname -r` ]; then
-		version=`uname -r`
+	if [ -f "/boot/initrd.img-$(uname -r)" ]; then
+		version=$(uname -r)
 	fi
 }
 
@@ -243,6 +245,7 @@ set_highest_version()
 		version=
 		return
 	fi
+	# shellcheck disable=SC2086
 	set -- ${version_list}
 	version=${1}
 }
@@ -350,10 +353,10 @@ while getopts "k:cudvtb:h?" flag; do
 	esac
 done
 
-shift $((${OPTIND} - 1))
+shift $((OPTIND - 1))
 
 if [ $# -ne 0 ]; then
-	printf "Extra argument '%s'\n\n" "$1" >&2
+	printf "Extra argument '%s'\\n\\n" "$1" >&2
 	usage
 fi
 
@@ -363,7 +366,7 @@ if [ -z "${mode}" ]; then
 fi
 
 if [ "${version}" = "all" ] \
-	|| ( [ "${update_initramfs}" = "all" ] && [ -z "${version}" ] ); then
+	|| { [ "${update_initramfs}" = "all" ] && [ -z "${version}" ]; }; then
 	get_sorted_versions
 	if [ -z "${version_list}" ]; then
 		verbose "Nothing to do, exiting."
@@ -376,6 +379,7 @@ if [ "${version}" = "all" ] \
 	fi
 	for u_version in ${version_list}; do
 		verbose "Execute: ${0} -${mode} -k \"${u_version}\" ${OPTS}"
+		# shellcheck disable=SC2086
 		"${0}" -${mode} -k "${u_version}" ${OPTS}
 	done
 	exit 0

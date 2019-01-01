@@ -4,7 +4,7 @@ set -eu
 
 usage()
 {
-	echo "Usage: $(basename $0) [-l] <initramfs file>"
+	echo "Usage: $(basename "$0") [-l] <initramfs file>"
 }
 
 if [ "$#" -eq 0 ] ; then
@@ -14,8 +14,9 @@ fi
 
 umi_opts="--list"
 
-OPTIONS=`getopt -o hl --long help,long -n "$0" -- "$@"`
+OPTIONS=$(getopt -o hl --long help,long -n "$0" -- "$@")
 # Check for non-GNU getopt
+# shellcheck disable=SC2181
 if [ $? != 0 ] ; then echo "W: non-GNU getopt" >&2 ; exit 1 ; fi
 
 eval set -- "$OPTIONS"
