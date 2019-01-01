@@ -62,6 +62,7 @@ export panic=
 export blacklist=
 export resume=
 export resume_offset=
+export noresume=
 export drop_caps=
 export fastboot=n
 export forcefsck=n
@@ -198,8 +199,7 @@ if [ -z "${BOOT}" ]; then
 fi
 
 if [ -n "${noresume}" ] || [ "$RESUME" = none ]; then
-	export noresume=y
-	unset resume
+	noresume=y
 else
 	resume=${RESUME:-}
 fi
@@ -311,6 +311,7 @@ unset quiet
 unset readonly
 unset resume
 unset resume_offset
+unset noresume
 unset fastboot
 unset forcefsck
 unset fsckfix
