@@ -176,9 +176,6 @@ local_mount_root()
 		roflag=-w
 	fi
 
-	# FIXME This has no error checking
-	modprobe "${FSTYPE}"
-
 	checkfs "${ROOT}" root "${FSTYPE}"
 
 	# Mount root
@@ -202,9 +199,6 @@ local_mount_fs()
 	else
 		roflag=-w
 	fi
-
-	# FIXME This has no error checking
-	modprobe "${MNT_TYPE}"
 
 	if [ "$MNT_PASS" != 0 ]; then
 		checkfs "$MNT_FSNAME" "$MNT_DIR" "${MNT_TYPE}"

@@ -80,7 +80,6 @@ nfs_mount_root()
 {
 	nfs_top
 
-	modprobe nfs
 	# For DHCP
 	modprobe af_packet
 
@@ -130,7 +129,6 @@ nfs_mount_fs()
 {
 	nfs_top
 
-	modprobe nfs
 	# For DHCP
 	modprobe af_packet
 
