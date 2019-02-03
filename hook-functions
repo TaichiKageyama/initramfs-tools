@@ -131,7 +131,6 @@ copy_file() {
 	# check if already copied
 	[ -e "${DESTDIR}/${target}" ] && return 1
 
-	#FIXME: inst_dir
 	mkdir -p "${DESTDIR}/${target%/*}"
 
 	if [ -h "${src}" ]; then
