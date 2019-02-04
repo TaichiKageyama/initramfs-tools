@@ -162,7 +162,7 @@ local_mount_root()
 	ROOT="${DEV}"
 
 	# Get the root filesystem type if not set
-	if [ -z "${ROOTFSTYPE}" ]; then
+	if [ -z "${ROOTFSTYPE}" ] || [ "${ROOTFSTYPE}" = auto ]; then
 		FSTYPE=$(get_fstype "${ROOT}")
 	else
 		FSTYPE=${ROOTFSTYPE}
