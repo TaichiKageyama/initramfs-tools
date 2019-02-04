@@ -95,7 +95,7 @@ nfs_mount_root()
 	while [ ${nfs_retry_count} -lt "${delay}" ] \
 		&& [ $ret -ne 0 ] ; do
 		[ "$quiet" != "y" ] && log_begin_msg "Retrying nfs mount"
-		/bin/sleep 1
+		sleep 1
 		nfs_mount_root_impl
 		ret=$?
 		nfs_retry_count=$(( nfs_retry_count + 1 ))
