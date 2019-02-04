@@ -158,7 +158,7 @@ parse_numeric() {
 # Return value: indicates if an fs could be recognized
 get_fstype ()
 {
-	local FS FSTYPE RET
+	local FS FSTYPE
 	FS="${1}"
 
 	# blkid has a more complete list of file systems,
@@ -166,16 +166,10 @@ get_fstype ()
 	FSTYPE="unknown"
 	eval "$(fstype "${FS}" 2> /dev/null)"
 	if [ "$FSTYPE" = "unknown" ]; then
-		FSTYPE=$(blkid -o value -s TYPE "${FS}")
+		FSTYPE=$(blkid -o value -s TYPE "${FS}") || return
 	fi
-	RET=$?
-
-	if [ -z "${FSTYPE}" ]; then
-		FSTYPE="unknown"
-	fi
-
 	echo "${FSTYPE}"
-	return ${RET}
+	return 0
 }
 
 _handle_device_vs_ip()

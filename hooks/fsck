@@ -53,7 +53,7 @@ get_fsck_type_fstab () {
 		if [ "${MNT_DIR}" = "/" ] || [ "${MNT_TYPE}" = "auto" ]; then
 			MNT_FSNAME="$(resolve_device "${MNT_FSNAME}")"
 			fstype() { "/usr/lib/klibc/bin/fstype" "$@"; }
-			get_fstype "${MNT_FSNAME}"
+			get_fstype "${MNT_FSNAME}" || echo unknown
 			unset -f fstype
 		else
 			echo "${MNT_TYPE}"
