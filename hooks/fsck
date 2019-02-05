@@ -53,7 +53,9 @@ get_fsck_type_fstab () {
 		if [ "${MNT_DIR}" = "/" ] || [ "${MNT_TYPE}" = "auto" ]; then
 			MNT_FSNAME="$(resolve_device "${MNT_FSNAME}")"
 			fstype() { "/usr/lib/klibc/bin/fstype" "$@"; }
-			get_fstype "${MNT_FSNAME}" || echo unknown
+			if ! get_fstype "${MNT_FSNAME}"; then
+				echo "W: Couldn't identify type of $2 file system for fsck hook" >&2
+			fi
 			unset -f fstype
 		else
 			echo "${MNT_TYPE}"
@@ -62,8 +64,8 @@ get_fsck_type_fstab () {
 }
 
 get_fsck_types() {
-	get_fsck_type_fstab /
-	get_fsck_type_fstab /usr
+	get_fsck_type_fstab /    root
+	get_fsck_type_fstab /usr /usr
 }
 
 case $1 in
@@ -90,11 +92,6 @@ copy_exec /sbin/fsck
 copy_exec /sbin/logsave
 
 for type in $fsck_types; do
-	if [ "$type" = "unknown" ] ; then
-		echo "W: couldn't identify filesystem type for fsck hook" >&2
-		continue
-	fi
-
 	if prog="$(command -v "fsck.${type}")"; then
 		copy_exec "$prog"
 	else
