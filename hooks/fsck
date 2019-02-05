@@ -91,13 +91,13 @@ copy_exec /sbin/logsave
 
 for type in $fsck_types; do
 	if [ "$type" = "unknown" ] ; then
-		echo "Warning: couldn't identify filesystem type for fsck hook, ignoring."
+		echo "W: couldn't identify filesystem type for fsck hook" >&2
 		continue
 	fi
 
 	if prog="$(command -v "fsck.${type}")"; then
 		copy_exec "$prog"
 	else
-		echo "Warning: /sbin/fsck.${type} doesn't exist, can't install to initramfs, ignoring."
+		echo "W: /sbin/fsck.${type} doesn't exist, can't install to initramfs" >&2
 	fi
 done

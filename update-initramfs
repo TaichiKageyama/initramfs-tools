@@ -195,8 +195,8 @@ ro_boot_check()
 	boot_opts=$(awk '/boot/{if ((match($4, /^ro/) || match($4, /,ro/)) \
 		&& $2 == "/boot") print "ro"}' /proc/mounts)
 	if [ -n "${boot_opts}" ]; then
-		echo "WARNING: /boot is ro mounted."
-		echo "update-initramfs: Not updating ${initramfs}"
+		echo "W: /boot is ro mounted." >&2
+		echo "W: update-initramfs: Not updating ${initramfs}" >&2
 		exit 0
 	fi
 }
@@ -343,7 +343,7 @@ while getopts "k:cudvtb:h?" flag; do
 	b)
 		BOOTDIR="${OPTARG}"
 		if [ ! -d "${BOOTDIR}" ]; then
-			echo "Error: ${BOOTDIR} is not a directory." >&2
+			echo "E: ${BOOTDIR} is not a directory." >&2
 			exit 1
 		fi
 		;;
