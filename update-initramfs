@@ -325,7 +325,7 @@ verbose=0
 
 ##
 
-OPTIONS=$(getopt -o "k:cudvtb:h?" -n "$0" -- "$@") || usage_error
+OPTIONS=$(getopt -o "k:cudvtb:h?" --long help -n "$0" -- "$@") || usage_error
 
 eval set -- "$OPTIONS"
 
@@ -363,7 +363,7 @@ while true; do
 		fi
 		shift 2
 		;;
-	-h|-\?)
+	-h|-\?|--help)
 		usage
 		exit 0
 		;;
