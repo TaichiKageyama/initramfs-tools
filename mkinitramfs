@@ -11,6 +11,24 @@ verbose="n"
 BUSYBOXDIR=
 export BUSYBOXDIR
 
+usage()
+{
+	cat >&2 << EOF
+
+Usage: ${0} [OPTION]... -o outfile [version]
+
+Options:
+  -c compress	Override COMPRESS setting in initramfs.conf.
+  -d confdir	Specify an alternative configuration directory.
+  -k		Keep temporary directory used to make the image.
+  -o outfile	Write to outfile.
+  -r root	Override ROOT setting in initramfs.conf.
+
+See mkinitramfs(8) for further details.
+EOF
+	exit 1
+}
+
 OPTIONS=$(getopt -o c:d:ko:r:v -n "$0" -- "$@")
 
 # Check for non-GNU getopt
