@@ -4,7 +4,16 @@ set -eu
 
 usage()
 {
-	echo "Usage: $(basename "$0") [-v] <initramfs file> <directory>"
+	cat << EOF
+
+Usage: unmkinitramfs [-v] initramfs-file directory
+
+Options:
+  -v   Display verbose messages about extraction
+
+See unmkinitramfs(8) for further details.
+
+EOF
 }
 
 # Extract a compressed cpio archive

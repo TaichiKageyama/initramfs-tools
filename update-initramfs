@@ -36,7 +36,8 @@ esac
 usage()
 {
 	cat << EOF
-Usage: ${0} [OPTION]...
+
+Usage: update-initramfs {-c|-d|-u} [-k version] [-v] [-b directory]
 
 Options:
  -k version	Specify kernel version or 'all'
@@ -45,7 +46,8 @@ Options:
  -d		Remove an existing initramfs
  -b directory	Set alternate boot directory
  -v		Be verbose
- -h		This message
+
+See update-initramfs(8) for further details.
 
 EOF
 }

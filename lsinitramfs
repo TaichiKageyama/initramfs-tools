@@ -4,7 +4,16 @@ set -eu
 
 usage()
 {
-	echo "Usage: $(basename "$0") [-l] <initramfs file>"
+	cat << EOF
+
+Usage: lsinitramfs [-l] initramfs-file...
+
+Options:
+  -l   Display long and more verbose listing of initramfs content
+
+See lsinitramfs(8) for further details.
+
+EOF
 }
 
 if [ "$#" -eq 0 ] ; then

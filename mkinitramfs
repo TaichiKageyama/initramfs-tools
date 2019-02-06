@@ -15,7 +15,7 @@ usage()
 {
 	cat << EOF
 
-Usage: ${0} [OPTION]... -o outfile [version]
+Usage: mkinitramfs [option]... -o outfile [version]
 
 Options:
   -c compress	Override COMPRESS setting in initramfs.conf.
@@ -25,6 +25,7 @@ Options:
   -r root	Override ROOT setting in initramfs.conf.
 
 See mkinitramfs(8) for further details.
+
 EOF
 }
 
