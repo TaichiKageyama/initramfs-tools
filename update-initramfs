@@ -35,10 +35,7 @@ esac
 
 usage()
 {
-	if [ -n "${1:-}" ]; then
-		printf "%s\\n\\n" "${*}" >&2
-	fi
-	cat >&2 << EOF
+	cat << EOF
 Usage: ${0} [OPTION]...
 
 Options:
@@ -51,6 +48,14 @@ Options:
  -h		This message
 
 EOF
+}
+
+usage_error()
+{
+	if [ -n "${1:-}" ]; then
+		printf "%s\\n\\n" "${*}" >&2
+	fi
+	usage >&2
 	exit 1
 }
 
@@ -253,7 +258,7 @@ set_highest_version()
 create()
 {
 	if [ -z "${version}" ]; then
-		usage "Create mode requires a version argument"
+		usage_error "Create mode requires a version argument"
 	fi
 
 	set_initramfs
@@ -303,7 +308,7 @@ update()
 delete()
 {
 	if [ -z "${version}" ]; then
-		usage "Delete mode requires a version argument"
+		usage_error "Delete mode requires a version argument"
 	fi
 
 	set_initramfs
@@ -320,7 +325,7 @@ verbose=0
 
 ##
 
-OPTIONS=$(getopt -o "k:cudvtb:h?" -n "$0" -- "$@") || usage
+OPTIONS=$(getopt -o "k:cudvtb:h?" -n "$0" -- "$@") || usage_error
 
 eval set -- "$OPTIONS"
 
@@ -360,6 +365,7 @@ while true; do
 		;;
 	-h|-\?)
 		usage
+		exit 0
 		;;
 	--)
 		shift
@@ -370,12 +376,12 @@ done
 
 if [ $# -ne 0 ]; then
 	printf "Extra argument '%s'\\n\\n" "$1" >&2
-	usage
+	usage_error
 fi
 
 # Validate arguments
 if [ -z "${mode}" ]; then
-	usage "You must specify at least one of -c, -u, or -d."
+	usage_error "You must specify at least one of -c, -u, or -d."
 fi
 
 if [ "${version}" = "all" ] \
