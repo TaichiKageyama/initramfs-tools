@@ -320,40 +320,53 @@ verbose=0
 
 ##
 
-while getopts "k:cudvtb:h?" flag; do
-	case "${flag}" in
-	k)
-		version="${OPTARG}"
+OPTIONS=$(getopt -o "k:cudvtb:h?" -n "$0" -- "$@") || usage
+
+eval set -- "$OPTIONS"
+
+while true; do
+	case "$1" in
+	-k)
+		version="$2"
+		shift 2
 		;;
-	c)
+	-c)
 		mode="c"
+		shift
 		;;
-	d)
+	-d)
 		mode="d"
+		shift
 		;;
-	u)
+	-u)
 		mode="u"
+		shift
 		;;
-	v)
+	-v)
 		verbose="1"
+		shift
 		;;
-	t)
+	-t)
 		# accepted for compatibility, but ignored
+		shift
 		;;
-	b)
-		BOOTDIR="${OPTARG}"
+	-b)
+		BOOTDIR="$2"
 		if [ ! -d "${BOOTDIR}" ]; then
 			echo "E: ${BOOTDIR} is not a directory." >&2
 			exit 1
 		fi
+		shift 2
 		;;
-	h|?)
+	-h|-\?)
 		usage
+		;;
+	--)
+		shift
+		break
 		;;
 	esac
 done
-
-shift $((OPTIND - 1))
 
 if [ $# -ne 0 ]; then
 	printf "Extra argument '%s'\\n\\n" "$1" >&2
