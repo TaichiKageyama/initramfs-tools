@@ -16,6 +16,12 @@ See unmkinitramfs(8) for further details.
 EOF
 }
 
+usage_error()
+{
+	usage >&2
+	exit 2
+}
+
 # Extract a compressed cpio archive
 xcpio()
 {
@@ -162,8 +168,7 @@ while true; do
 done
 
 if [ $# -ne $expected_args ]; then
-	usage
-	exit 2
+	usage_error
 fi
 
 # shellcheck disable=SC2086
