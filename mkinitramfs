@@ -35,11 +35,7 @@ usage_error()
 	exit 2
 }
 
-OPTIONS=$(getopt -o c:d:hko:r:v --long help -n "$0" -- "$@")
-
-# Check for non-GNU getopt
-# shellcheck disable=SC2181
-if [ $? != 0 ] ; then echo "W: non-GNU getopt" >&2 ; exit 2 ; fi
+OPTIONS=$(getopt -o c:d:hko:r:v --long help -n "$0" -- "$@") || usage_error
 
 eval set -- "$OPTIONS"
 

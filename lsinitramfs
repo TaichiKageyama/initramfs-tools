@@ -16,17 +16,19 @@ See lsinitramfs(8) for further details.
 EOF
 }
 
-if [ "$#" -eq 0 ] ; then
+usage_error()
+{
 	usage >&2
 	exit 2
+}
+
+if [ "$#" -eq 0 ] ; then
+	usage_error
 fi
 
 umi_opts="--list"
 
-OPTIONS=$(getopt -o hl --long help,long -n "$0" -- "$@")
-# Check for non-GNU getopt
-# shellcheck disable=SC2181
-if [ $? != 0 ] ; then echo "W: non-GNU getopt" >&2 ; exit 2 ; fi
+OPTIONS=$(getopt -o hl --long help,long -n "$0" -- "$@") || usage_error
 
 eval set -- "$OPTIONS"
 
