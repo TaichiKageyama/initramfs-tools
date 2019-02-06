@@ -16,6 +16,8 @@ mkinitramfs \- low-level tool for generating an initramfs image
 .IR root ]
 .RB [ \-v ]
 .RI [ version ]
+.br
+.BR mkinitramfs " " -h
 
 .SH DESCRIPTION
 The
@@ -50,7 +52,6 @@ setting in
 Set an alternate configuration directory.
 
 .TP
-.TP
 \fB\-k
 Keep the temporary directory used to make the image.
 
@@ -74,6 +75,10 @@ Set the verbose mode output.
 \fIversion
 Set the kernel version of the initramfs image
 (defaults to the running kernel).
+
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+Display usage information and exit.
 
 .SH ENVIRONMENT
 .B mkinitramfs

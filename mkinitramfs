@@ -13,7 +13,7 @@ export BUSYBOXDIR
 
 usage()
 {
-	cat >&2 << EOF
+	cat << EOF
 
 Usage: ${0} [OPTION]... -o outfile [version]
 
@@ -26,10 +26,15 @@ Options:
 
 See mkinitramfs(8) for further details.
 EOF
+}
+
+usage_error()
+{
+	usage >&2
 	exit 2
 }
 
-OPTIONS=$(getopt -o c:d:ko:r:v -n "$0" -- "$@")
+OPTIONS=$(getopt -o c:d:hko:r:v --long help -n "$0" -- "$@")
 
 # Check for non-GNU getopt
 # shellcheck disable=SC2181
@@ -50,6 +55,10 @@ while true; do
 			echo "${0}: ${CONFDIR}: Not a directory" >&2
 			exit 1
 		fi
+		;;
+	-h|--help)
+		usage
+		exit 0
 		;;
 	-o)
 		outfile="$2"
@@ -128,7 +137,7 @@ if [ -n "${UMASK:-}" ]; then
 fi
 
 if [ -z "${outfile}" ]; then
-	usage
+	usage_error
 fi
 
 touch "$outfile"
