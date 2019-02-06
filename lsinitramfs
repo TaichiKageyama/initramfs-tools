@@ -22,10 +22,6 @@ usage_error()
 	exit 2
 }
 
-if [ "$#" -eq 0 ] ; then
-	usage_error
-fi
-
 umi_opts="--list"
 
 OPTIONS=$(getopt -o hl --long help,long -n "$0" -- "$@") || usage_error
@@ -51,6 +47,10 @@ while true; do
 		exit 1
 	esac
 done
+
+if [ "$#" -eq 0 ] ; then
+	usage_error
+fi
 
 for initramfs in "$@" ; do
 	unmkinitramfs $umi_opts -- "$initramfs"
