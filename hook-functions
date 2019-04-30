@@ -449,7 +449,7 @@ dep_add_modules()
 	fi
 
 	# sys walk some important device classes
-	for class in gpio phy regulator rtc; do
+	for class in extcon gpio phy regulator rtc; do
 		for device in "/sys/class/$class"/*; do
 			device="$(readlink -f "$device")" \
 				&& sys_walk_mod_add "$device"
