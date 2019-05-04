@@ -544,9 +544,11 @@ auto_add_modules()
 			# on a number of armhf systems
 			modules="$modules axp20x_usb_power"
 
-			# Include all HID drivers unless we're sure they
-			# don't support keyboards.  hid-*ff covers various
-			# game controllers with force feedback.
+			# Include all keyboard drivers and all HID drivers
+			# unless we're sure they don't support keyboards.
+			# hid-*ff covers various game controllers with
+			# force feedback.
+			copy_modules_dir kernel/drivers/input/keyboard
 			copy_modules_dir kernel/drivers/hid \
 				'hid-*ff.ko' hid-a4tech.ko hid-cypress.ko \
 				hid-dr.ko hid-elecom.ko hid-gyration.ko \
