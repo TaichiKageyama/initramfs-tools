@@ -124,14 +124,14 @@ copy_file() {
 
 	[ -f "${src}" ] || return 2
 
+	if [ -d "${DESTDIR}/${target}" ]; then
+		target="${target}/${src##*/}"
+	fi
+
 	# Canonicalise usr-merged target directories
 	case "${target}" in
 	/bin/* | /lib* | /sbin/*) target="/usr${target}" ;;
 	esac
-
-	if [ -d "${DESTDIR}/${target}" ]; then
-		target="${target}/${src##*/}"
-	fi
 
 	# check if already copied
 	[ -e "${DESTDIR}/${target}" ] && return 1
