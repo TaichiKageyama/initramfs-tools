@@ -673,6 +673,9 @@ hidden_dep_add_modules()
 			spi-rockchip)
 				echo pl330
 				;;
+			dw_mmc-rockchip)
+				echo rockchip-io-domain
+				;;
 			esac
 		done
 		)
