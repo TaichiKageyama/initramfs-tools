@@ -449,7 +449,7 @@ dep_add_modules()
 	fi
 
 	# sys walk some important device classes
-	for class in extcon gpio phy regulator rtc; do
+	for class in backlight extcon gpio phy pwm regulator rtc; do
 		for device in "/sys/class/$class"/*; do
 			device="$(readlink -f "$device")" \
 				&& sys_walk_mod_add "$device"
@@ -472,6 +472,26 @@ dep_add_modules()
 			sys_walk_mod_add "$(readlink -f "$device")"
 		fi
 	done
+
+	# Sys walk graphics for machines that don't have a generic framebuffer
+	# device and wouldn't have a working video console otherwise.
+	walk_graphics=yes
+	for device in /sys/bus/platform/drivers/efi-framebuffer/* \
+	              /sys/bus/platform/drivers/platform-framebuffer/* \
+	              /sys/bus/platform/drivers/simple-framebuffer/* \
+	              /sys/bus/platform/drivers/vesa-framebuffer/*; do
+		if [ -d "$device" ]; then
+			walk_graphics=no
+			break
+		fi
+	done
+
+	if [ "$walk_graphics" = "yes" ]; then
+		for device in /sys/class/graphics/*; do
+			device="$(readlink -f "$device")" \
+				&& sys_walk_mod_add "$device"
+		done
+	fi
 
 	# catch old-style IDE
 	if [ -e /sys/bus/ide/devices/ ]; then
@@ -503,6 +523,10 @@ dep_add_modules()
 		modules="$modules sunvnet sunvdc"
 	fi
 
+	if [ -e /sys/devices/platform/edp-panel ]; then
+		sys_walk_mod_add /sys/devices/platform/edp-panel
+	fi
+
 	# shellcheck disable=SC2086
 	manual_add_modules $modules
 }
@@ -514,7 +538,7 @@ auto_add_modules()
 	local modules=
 
 	if [ "$#" -eq 0 ] ; then
-		set -- base net ide scsi block ata i2o dasd ieee1394 firewire mmc usb_storage
+		set -- base net ide scsi block ata i2o dasd ieee1394 firewire mmc usb_storage fb
 	fi
 
 	for arg in "$@" ; do
@@ -624,6 +648,10 @@ auto_add_modules()
 		;;
 		usb_storage)
 			copy_modules_dir kernel/drivers/usb/storage
+		;;
+		fb)
+			# For machines that don't have a generic framebuffer device.
+			modules="$modules rockchipdrm pwm-cros-ec pwm_bl panel-simple"
 		;;
 		esac
 	done
