@@ -183,7 +183,7 @@ copy_exec() {
 	copy_file binary "${src}" "${target}" || return $(($? - 1))
 
 	# Copy the dependant libraries
-	for x in $(ldd "${src}" 2>/dev/null | sed -e '
+	for x in $(env --unset=LD_PRELOAD ldd "${src}" 2>/dev/null | sed -e '
 		/\//!d;
 		/linux-gate/d;
 		/=>/ {s/.*=>[[:blank:]]*\([^[:blank:]]*\).*/\1/};
