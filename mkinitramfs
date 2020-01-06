@@ -349,11 +349,6 @@ for file in /etc/modprobe.d/*.conf /lib/modprobe.d/*.conf ; do
 	fi
 done
 
-# workaround: libgcc always needed on old-abi arm
-if [ "$DPKG_ARCH" = arm ] || [ "$DPKG_ARCH" = armeb ]; then
-	cp -a /lib/libgcc_s.so.1 "${DESTDIR}/lib/"
-fi
-
 run_scripts /usr/share/initramfs-tools/hooks
 run_scripts "${CONFDIR}"/hooks
 
