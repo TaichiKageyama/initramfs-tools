@@ -33,7 +33,8 @@ export quiet
 
 # Note that this only becomes /dev on the real filesystem if udev's scripts
 # are used; which they will be, but it's worth pointing out
-mount -t devtmpfs -o noexec,nosuid,mode=0755 udev /dev
+test -x /usr/sbin/v86d && dev_exec="exec" || dev_exec="noexec"
+mount -t devtmpfs -o $dev_exec,nosuid,mode=0755 udev /dev
 mkdir /dev/pts
 mount -t devpts -o noexec,nosuid,gid=5,mode=0620 devpts /dev/pts || true
 
