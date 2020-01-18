@@ -379,11 +379,6 @@ if [ -e "${CONFDIR}/DSDT.aml" ]; then
 	copy_file DSDT "${CONFDIR}/DSDT.aml"
 fi
 
-# Make sure there is a final sh in initramfs
-if [ ! -e "${DESTDIR}/bin/sh" ]; then
-	copy_exec /bin/sh "${DESTDIR}/bin/"
-fi
-
 [ "${verbose}" = y ] && echo "Building cpio ${outfile} initramfs"
 
 if [ -s "${__TMPEARLYCPIO}" ]; then
