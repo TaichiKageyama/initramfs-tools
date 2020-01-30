@@ -170,7 +170,7 @@ copy_file() {
 	cp -pP "${src}" "${DESTDIR}/${target}" || return $(($? + 1))
 }
 
-# $1 = executable to copy to initramfs, with library dependencies
+# $1 = executable/shared library to copy to initramfs, with dependencies
 # $2 (optional) Name for the file on the initramfs
 # Location of the image dir is assumed to be $DESTDIR
 # We never overwrite the target if it exists.
@@ -199,7 +199,7 @@ copy_exec() {
 			x="${nonoptlib}"
 		fi
 
-		copy_file library "${x}" || {
+		copy_file binary "${x}" || {
 			ret=$?
 			[ ${ret} = 1 ] || return $((ret - 1))
 		}
