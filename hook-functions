@@ -152,7 +152,7 @@ copy_file() {
 		esac
 
 		if [ "${link_target}" != "${target}" ]; then
-			[ "${verbose?}" = "y" ] && echo "Adding ${type}-link ${src}"
+			[ "${verbose?}" = "y" ] && echo "Adding ${type}-link ${target}"
 
 			# Create a relative link so it always points
 			# to the right place
