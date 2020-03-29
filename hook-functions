@@ -466,7 +466,7 @@ dep_add_modules()
 	fi
 
 	# sys walk some important device classes
-	for class in backlight extcon gpio phy pwm regulator rtc; do
+	for class in extcon gpio phy pwm regulator rtc; do
 		class_add_modules "$class"
 	done
 
@@ -501,6 +501,7 @@ dep_add_modules()
 	done
 
 	if [ "$walk_graphics" = "yes" ]; then
+		class_add_modules backlight
 		class_add_modules graphics
 	fi
 
