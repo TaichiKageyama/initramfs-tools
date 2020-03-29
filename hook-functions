@@ -440,6 +440,16 @@ dep_add_modules_mount()
 	block_dev_mod_add "$dev_node"
 }
 
+class_add_modules()
+{
+	local device
+
+	for device in "/sys/class/$1"/*; do
+		device="$(readlink -f "$device")" \
+			&& sys_walk_mod_add "$device"
+	done
+}
+
 dep_add_modules()
 {
 	local device dev_node
@@ -457,10 +467,7 @@ dep_add_modules()
 
 	# sys walk some important device classes
 	for class in backlight extcon gpio phy pwm regulator rtc; do
-		for device in "/sys/class/$class"/*; do
-			device="$(readlink -f "$device")" \
-				&& sys_walk_mod_add "$device"
-		done
+		class_add_modules "$class"
 	done
 
 	# clk, USB-PHY and pinctrl devices are outside the device model (!) so
@@ -494,10 +501,7 @@ dep_add_modules()
 	done
 
 	if [ "$walk_graphics" = "yes" ]; then
-		for device in /sys/class/graphics/*; do
-			device="$(readlink -f "$device")" \
-				&& sys_walk_mod_add "$device"
-		done
+		class_add_modules graphics
 	fi
 
 	# catch old-style IDE
