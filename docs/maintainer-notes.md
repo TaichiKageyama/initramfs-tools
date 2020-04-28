@@ -1,19 +1,6 @@
 # Maintainer documentation for initramfs-tools
 
-## Table of Contents
-
-* [1. Definitions](#definitions)
-* [2. Preparations](#preparations)
-* [3. Workflow for daily work](#workflow)
-  * [3.1 Implement new features](#newfeature)
-  * [3.2 Merge branches](#merge)
-  * [3.3 Test specific branch](#test)
-  * [3.4 Build snapshot version](#snapshot)
-* [4. Contribute](#contribute)
-* [5. Release new version](#release)
-* [6. Resources](#resources)
-* [7. Credits](#credits)
-* [8. License](#license)
+[[_TOC_]]
 
 **NOTE:** The most recent version of this document is available at
 docs/maintainer-notes.md in the [the git repository](#checkout)
