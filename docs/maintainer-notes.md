@@ -8,12 +8,12 @@ or online at [salsa.debian.org](https://salsa.debian.org/kernel-team/initramfs-t
 
 ## <a name="definitions">1. Definitions</a>
 
-<table>
-	<tr><td><code><b>$mailaddress:</b></code></td><td>mailaddress of the user</td></tr>
-	<tr><td><code><b>$username:</b></code></td><td>name of the Salsa account</td></tr>
-	<tr><td><code><b>$version:</b></code></td><td>version string</td></tr>
-	<tr><td><code><b>$yourname:</b></code></td><td>your fullname</td></tr>
-</table>
+| Name               | Meaning                   |
+| ---                | ---                       |
+| **`$mailaddress`** | mailaddress of the user   |
+| **`$username`**    | name of the Salsa account |
+| **`$version`**     | version string            |
+| **`$yourname`**    | your fullname             |
 
 ## <a name="preparations">2. Preparations</a>
 
