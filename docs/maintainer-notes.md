@@ -190,4 +190,4 @@ any stale remote branches locally by executing:
 * This document is licensed under GPL v2 or any later version.
 
 *--  Michael Prokop &lt;[mika@debian.org](mailto:mika@debian.org)&gt;,
-Ben Hutchings &lt;[ben@decadent.org.uk](mailto:ben@decadent.org.uk)&gt;*
+Ben Hutchings &lt;[benh@debian.org](mailto:benh@debian.org)&gt;*
