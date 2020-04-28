@@ -183,7 +183,7 @@ any stale remote branches locally by executing:
 
 ## <a name="credits">7. Credits</a>
 
-* Thanks to Daniel Baumann for his "[Debian Packaging with Git](http://documentation.debian-projects.org/other/debian-packaging-git/)" which inspired this document.
+* Thanks to Daniel Baumann for his "[Debian Packaging with Git](https://web.archive.org/web/20110528125600/http://documentation.debian-projects.org/other/debian-packaging-git/)" which inspired this document.
 
 ## <a name="license">8. License</a>
 
