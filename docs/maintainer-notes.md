@@ -1,8 +1,4 @@
-***
-
 # Maintainer documentation for initramfs-tools
-
-***
 
 ## Table of Contents
 
@@ -19,13 +15,9 @@
 * [7. Credits](#credits)
 * [8. License](#license)
 
-***
-
 **NOTE:** The most recent version of this document is available at
 docs/maintainer-notes.md in the [the git repository](#checkout)
 or online at [salsa.debian.org](https://salsa.debian.org/kernel-team/initramfs-tools/blob/master/docs/maintainer-notes.md).
-
-***
 
 ## <a name="definitions">1. Definitions</a>
 
@@ -35,8 +27,6 @@ or online at [salsa.debian.org](https://salsa.debian.org/kernel-team/initramfs-t
 	<tr><td><code><b>$version:</b></code></td><td>version string</td></tr>
 	<tr><td><code><b>$yourname:</b></code></td><td>your fullname</td></tr>
 </table>
-
-***
 
 ## <a name="preparations">2. Preparations</a>
 
@@ -63,8 +53,6 @@ or online at [salsa.debian.org](https://salsa.debian.org/kernel-team/initramfs-t
 
         % git clone ssh://git@salsa.debian.org/kernel-team/initramfs-tools.git
         % cd initramfs-tools
-
-***
 
 ## <a name="workflow">3. Workflow for daily work</a>
 
@@ -137,8 +125,6 @@ any stale remote branches locally by executing:
 
         % gbp buildpackage --git-ignore-new --git-debian-branch="$(git branch | awk -F\*\  '/^* / { print $2}' )" --post-clean
 
-***
-
 ### <a name="snapshot">3.4 Build snapshot version</a>
 
 1. Adjust debian/changelog accordingly:
@@ -149,8 +135,6 @@ any stale remote branches locally by executing:
 1. Build package:
 
         % gbp buildpackage --git-debian-branch="$(git branch | awk -F\*\  '/^* / { print $2}' )" --post-clean [-us -uc]
-
-***
 
 ## <a name="contribute">4. Contribute</a>
 
@@ -166,8 +150,6 @@ any stale remote branches locally by executing:
    and [initramfs@vger.kernel.org](mailto:initramfs@vger.kernel.org).
    Discussion of features, bugs and patches are more than welcome on one
    of these lists.
-
-***
 
 ## <a name="release">5. Release new version</a>
 
@@ -202,8 +184,6 @@ any stale remote branches locally by executing:
    debian-kernel@lists.debian.org + kernel-team@lists.ubuntu.com - including a
    shortlog (generated through "git shortlog $TAG..").
 
-***
-
 ## <a name="resources">6. Resources</a>
 
 * [initramfs-tools git web interface](https://salsa.debian.org/kernel-team/initramfs-tools)
@@ -214,21 +194,13 @@ any stale remote branches locally by executing:
 * [bugreports @ ubuntu](https://bugs.launchpad.net/ubuntu/+source/initramfs-tools)
 * [qa page @ ubuntu](http://status.qa.ubuntu.com/qapkgstatus/initramfs-tools)
 
-***
-
 ## <a name="credits">7. Credits</a>
 
 * Thanks to Daniel Baumann for his "[Debian Packaging with Git](http://documentation.debian-projects.org/other/debian-packaging-git/)" which inspired this document.
-
-***
 
 ## <a name="license">8. License</a>
 
 * This document is licensed under GPL v2 or any later version.
 
-***
-
 *--  Michael Prokop &lt;[mika@debian.org](mailto:mika@debian.org)&gt;,
 Ben Hutchings &lt;[ben@decadent.org.uk](mailto:ben@decadent.org.uk)&gt;*
-
-***
