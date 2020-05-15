@@ -209,7 +209,7 @@ copy_exec() {
 		# Handle common dlopen() dependency (Debian bug #950254)
 		case "${x}" in
 		*/libpthread.so.*)
-			copy_exec "${x%/*}/libgcc_s.so.1" || return
+			copy_libgcc "${x%/*}" || return
 			;;
 		esac
 
@@ -217,6 +217,15 @@ copy_exec() {
 			ret=$?
 			[ ${ret} = 1 ] || return $((ret - 1))
 		}
+	done
+}
+
+copy_libgcc() {
+	local libdir library
+
+	libdir="$1"
+	for library in "${libdir}"/libgcc_s.so.[1-9]; do
+		copy_exec "${library}" || return
 	done
 }
 
