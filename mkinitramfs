@@ -171,8 +171,7 @@ unset COMPRESS
 
 if ! command -v "${compress}" >/dev/null 2>&1; then
 	compress=gzip
-	[ "${verbose}" = y ] && \
-		echo "No ${compress} in ${PATH}, using gzip"
+	echo "No ${compress} in ${PATH}, using gzip"
 fi
 
 case "${compress}" in
