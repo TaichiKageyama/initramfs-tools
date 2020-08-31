@@ -12,26 +12,12 @@ set -e
 
 [ -r ${CONF} ] && . ${CONF}
 
-case "$DPKG_MAINTSCRIPT_PACKAGE" in
-linux-image-*)
-	if [ -z "$INITRAMFS_TOOLS_KERNEL_HOOK" ]; then
-		# kernel maintainer script called us directly; ignore
-		# it and let the hook script handle it instead
-		echo "update-initramfs: deferring update (hook will be called later)"
+if [ -n "$DPKG_MAINTSCRIPT_PACKAGE" ] && [ $# = 1 ] && [ x"$1" = x-u ]; then
+	if dpkg-trigger --no-await update-initramfs; then
+		echo "update-initramfs: deferring update (trigger activated)"
 		exit 0
 	fi
-	;;
-?*)
-	if	   [ $# = 1 ]						\
-		&& [ x"$1" = x-u ]
-	then
-		if dpkg-trigger --no-await update-initramfs; then
-			echo "update-initramfs: deferring update (trigger activated)"
-			exit 0
-		fi
-	fi
-	;;
-esac
+fi
 
 usage()
 {
