@@ -144,6 +144,25 @@ load_modules()
 	fi
 }
 
+_uptime() {
+    local uptime
+    uptime="$(cat /proc/uptime)"
+    uptime="${uptime%%[. ]*}"
+    echo "$uptime"
+}
+
+time_elapsed() {
+    # shellcheck disable=SC2154
+    if [ -z "$starttime" ]; then
+        log_failure_msg "time_elapsed() called before \$starttime initialized"
+        echo 0
+    fi
+    local delta
+    delta="$(_uptime)"
+    delta=$((delta - starttime))
+    echo "$delta"
+}
+
 # lilo compatibility
 parse_numeric() {
 	case $1 in
