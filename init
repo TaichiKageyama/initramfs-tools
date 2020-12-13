@@ -217,6 +217,10 @@ maybe_break modules
 load_modules
 [ "$quiet" != "y" ] && log_end_msg
 
+starttime="$(_uptime)"
+starttime=$((starttime + 1)) # round up
+export starttime
+
 if [ "$ROOTDELAY" ]; then
 	sleep "$ROOTDELAY"
 fi
@@ -309,6 +313,7 @@ unset noresume
 unset fastboot
 unset forcefsck
 unset fsckfix
+unset starttime
 
 # Move virtual filesystems over to the real filesystem
 mount -n -o move /sys ${rootmnt}/sys
