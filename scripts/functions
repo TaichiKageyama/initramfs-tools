@@ -212,13 +212,10 @@ get_fstype ()
 	return 0
 }
 
-_handle_device_vs_ip()
+_set_netdev_from_ip_param()
 {
-	# If the ip= parameter is present and is a colon-separated list,
-	# then:
-	# - If it specifies a device, use that in preference to any
-	#   device name we already have
-	# - Otherwise, substitute in any device name we already have
+	# If the ip= parameter is present and specifies a device, use
+	# that in preference to any device name we already have
 	local IFS=:
 	set -f
 	# shellcheck disable=SC2086
@@ -226,7 +223,22 @@ _handle_device_vs_ip()
 	set +f
 	if [ -n "$6" ]; then
 		DEVICE="$6"
-	elif [ $# -ge 2 ] && [ -n "${DEVICE}" ]; then
+		return 0
+	fi
+	return 1
+}
+
+_update_ip_param()
+{
+	# If the ip= parameter is present, and is a colon-separated list,
+	# but does not specify a device, substitute in the device name
+	# we have
+	local IFS=:
+	set -f
+	# shellcheck disable=SC2086
+	set -- ${IP}
+	set +f
+	if [ -z "$6" ] && [ $# -ge 2 ] && [ -n "${DEVICE}" ]; then
 		IP="$1:$2:$3:$4:$5:${DEVICE}"
 		shift 6 || shift $#
 		IP="${IP}:$*"
@@ -235,11 +247,17 @@ _handle_device_vs_ip()
 
 configure_networking()
 {
-	if [ -n "${BOOTIF}" ]; then
+	# The order of precedence here is:
+	# 1. Device specified by ip= kernel parameter
+	# 2. Device matching MAC specified by BOOTIF= kernel parameter
+	# 3. Build-time DEVICE variable
+	# In case 2 we only discover the device name while waiting
+	# for a device.
+	if _set_netdev_from_ip_param; then
+		:
+	elif [ -n "${BOOTIF}" ]; then
 		# pxelinux sets BOOTIF to a value based on the mac address of the
-		# network card used to PXE boot, so use this value for DEVICE rather
-		# than a hard-coded device name from initramfs.conf. this facilitates
-		# network booting when machines may have multiple network cards.
+		# network card used to PXE boot
 		# pxelinux sets BOOTIF to 01-$mac_address
 
 		# strip off the leading "01-", which isn't part of the mac
@@ -271,7 +289,7 @@ configure_networking()
 		done
 	fi
 
-	_handle_device_vs_ip
+	_update_ip_param
 
 	# networking already configured thus bail out
 	[ -n "${DEVICE}" ] && [ -e /run/net-"${DEVICE}".conf ] && return 0
