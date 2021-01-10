@@ -184,7 +184,21 @@ gzip)	# If we're doing a reproducible build, use gzip -n
 	fi
 	;;
 lz4)	compress="lz4 -9 -l" ;;
-zstd)	compress="zstd -q -19 -T0" ;;
+zstd)	# If kernel version is not greater equal than 5.9 and does not include
+	# CONFIG_RD_ZSTD=y, it should not be used then fallback to gzip.
+	if eval "dpkg --compare-versions $version ge 5.9 && \
+	    grep '^CONFIG_RD_ZSTD=y' /boot/config-${version} > /dev/null"; then
+		compress="zstd -q -19 -T0"
+	else
+		if [ -n "${SOURCE_DATE_EPOCH}" ]; then
+			compress="gzip -n"
+		elif command -v pigz >/dev/null; then
+			compress="pigz"
+		else
+			compress="gzip"
+		fi
+	fi
+	;;
 xz)	compress="xz --check=crc32"
 	# If we're not doing a reproducible build, enable multithreading
 	test -z "${SOURCE_DATE_EPOCH}" && compress="$compress --threads=0"
