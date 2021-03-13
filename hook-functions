@@ -665,6 +665,7 @@ auto_add_modules()
 			copy_modules_dir kernel/drivers/phy
 			copy_modules_dir kernel/drivers/pinctrl
 			copy_modules_dir kernel/drivers/regulator
+			copy_modules_dir kernel/drivers/reset
 			copy_modules_dir kernel/drivers/spi
 			copy_modules_dir kernel/drivers/usb/phy
 
