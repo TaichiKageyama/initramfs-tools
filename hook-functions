@@ -774,7 +774,7 @@ hidden_dep_add_modules()
 				echo pl330
 				;;
 			dw_mmc-rockchip)
-				echo rockchip-io-domain
+				echo rockchip-io-domain io-domain
 				;;
 			esac
 		done
