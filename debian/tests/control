@@ -1,7 +1,3 @@
-Tests: shellcheck
-Depends: @, shellcheck
-Restrictions: superficial
-
 Tests: amd64-klibc
 Depends: @, qemu-system-x86, linux-image-amd64 | linux-image-generic:amd64, klibc-utils, genext2fs
 Restrictions: skip-not-installable
