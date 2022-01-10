@@ -174,6 +174,27 @@ if ! command -v "${compress}" >/dev/null 2>&1; then
 	compress=gzip
 fi
 
+# Check that kernel supports selected compressor, and fall back to gzip.
+# Exit if even gzip is not supported.
+case "${compress}" in
+gzip)	kconfig_sym=CONFIG_RD_GZIP ;;
+bzip2)	kconfig_sym=CONFIG_RD_BZIP2 ;;
+lzma)	kconfig_sym=CONFIG_RD_LZMA ;;
+xz)	kconfig_sym=CONFIG_RD_XZ ;;
+lzop)	kconfig_sym=CONFIG_RD_LZO ;;
+lz4)	kconfig_sym=CONFIG_RD_LZ4 ;;
+zstd)	kconfig_sym=CONFIG_RD_ZSTD ;;
+esac
+while ! grep -q "^$kconfig_sym=y" "/boot/config-${version}"; do
+	if [ "${compress}" = gzip ]; then
+		echo "E: gzip compression ($kconfig_sym) not supported by kernel" >&2
+		exit 1
+	fi
+	echo "W: ${compress} compression ($kconfig_sym) not supported by kernel, using gzip" >&2
+	compress=gzip
+	kconfig_sym=CONFIG_RD_GZIP
+done
+
 case "${compress}" in
 gzip)	# If we're doing a reproducible build, use gzip -n
 	if [ -n "${SOURCE_DATE_EPOCH}" ]; then
@@ -184,21 +205,7 @@ gzip)	# If we're doing a reproducible build, use gzip -n
 	fi
 	;;
 lz4)	compress="lz4 -9 -l" ;;
-zstd)	# If kernel version is not greater equal than 5.9 and does not include
-	# CONFIG_RD_ZSTD=y, it should not be used then fallback to gzip.
-	if eval "dpkg --compare-versions $version ge 5.9 && \
-	    grep '^CONFIG_RD_ZSTD=y' /boot/config-${version} > /dev/null"; then
-		compress="zstd -q -9 -T0"
-	else
-		if [ -n "${SOURCE_DATE_EPOCH}" ]; then
-			compress="gzip -n"
-		elif command -v pigz >/dev/null; then
-			compress="pigz"
-		else
-			compress="gzip"
-		fi
-	fi
-	;;
+zstd)	compress="zstd -q -9 -T0" ;;
 xz)	compress="xz --check=crc32"
 	# If we're not doing a reproducible build, enable multithreading
 	test -z "${SOURCE_DATE_EPOCH}" && compress="$compress --threads=0"
