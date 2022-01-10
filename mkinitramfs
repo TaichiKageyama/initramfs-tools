@@ -170,7 +170,7 @@ fi
 unset COMPRESS
 
 if ! command -v "${compress}" >/dev/null 2>&1; then
-	echo "No ${compress} in ${PATH}, using gzip"
+	echo "W: No ${compress} in ${PATH}, using gzip" >&2
 	compress=gzip
 fi
 
