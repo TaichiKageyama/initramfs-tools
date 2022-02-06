@@ -97,8 +97,8 @@ manual_add_modules()
 	# configuration lines and embedded softdep information is not
 	# processed.  So we run twice, with and without this option.
 	# shellcheck disable=SC2034
-	{ modprobe --all --set-version="${version?}" --ignore-install --quiet --show-depends "$@";
-	  modprobe --all --set-version="${version}" --quiet --show-depends "$@"; } |
+	{ /sbin/modprobe --all --set-version="${version?}" --ignore-install --quiet --show-depends "$@";
+	  /sbin/modprobe --all --set-version="${version}" --quiet --show-depends "$@"; } |
 	while read -r prefix kmod options ; do
 		if [ "${prefix}" != "insmod" ]; then
 			continue
