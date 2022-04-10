@@ -680,6 +680,10 @@ auto_add_modules()
 				macvtap.ko pcmcia sb1000.ko team tokenring \
 				tun.ko usb veth.ko wan wimax wireless \
 				xen-netback.ko
+
+			# Required to initialize Ethernet (FEC) on ARM64 iMX8M
+			# devices.
+			modules="$modules nvmem-imx-ocotp"
 		;;
 		ide)
 			copy_modules_dir kernel/drivers/ide
