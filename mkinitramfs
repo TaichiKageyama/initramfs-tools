@@ -20,6 +20,7 @@ Usage: mkinitramfs [option]... -o outfile [version]
 Options:
   -c compress	Override COMPRESS setting in initramfs.conf.
   -d confdir	Specify an alternative configuration directory.
+  -l level	Override COMPRESSLEVEL setting in initramfs.conf.
   -k		Keep temporary directory used to make the image.
   -o outfile	Write to outfile.
   -r root	Override ROOT setting in initramfs.conf.
@@ -35,7 +36,7 @@ usage_error()
 	exit 2
 }
 
-OPTIONS=$(getopt -o c:d:hko:r:v --long help -n "$0" -- "$@") || usage_error
+OPTIONS=$(getopt -o c:d:hl:ko:r:v --long help -n "$0" -- "$@") || usage_error
 
 eval set -- "$OPTIONS"
 
@@ -56,6 +57,10 @@ while true; do
 	-h|--help)
 		usage
 		exit 0
+		;;
+	-l)
+		compresslevel="$2"
+		shift 2
 		;;
 	-o)
 		outfile="$2"
@@ -195,6 +200,20 @@ while ! grep -q "^$kconfig_sym=y" "/boot/config-${version}"; do
 	kconfig_sym=CONFIG_RD_GZIP
 done
 
+if [ -z "${compresslevel:-}" ]; then
+	compresslevel=${COMPRESSLEVEL:-}
+fi
+case "${compress}" in
+lz4)	compresslevel="-${compresslevel:-9}" ;;
+zstd)	compresslevel="-${compresslevel:-9}" ;;
+#gzip|xz|bzip2|lzma|lzop included
+*)
+	# We're not using a compression level by default
+	compresslevel="${compresslevel:+-${compresslevel}}"
+	;;
+esac
+unset COMPRESSLEVEL
+
 case "${compress}" in
 gzip)	# If we're doing a reproducible build, use gzip -n
 	if [ -n "${SOURCE_DATE_EPOCH}" ]; then
@@ -203,18 +222,21 @@ gzip)	# If we're doing a reproducible build, use gzip -n
 	elif command -v pigz >/dev/null; then
 		compress=pigz
 	fi
+	if [ -n "${compresslevel}" ]; then
+		compress="${compress} ${compresslevel}"
+	fi
 	;;
-lz4)	compress="lz4 -9 -l" ;;
-zstd)	compress="zstd -q -9"
+lz4)	compress="lz4 ${compresslevel} -l" ;;
+zstd)	compress="zstd -q ${compresslevel}"
 	# If we're not doing a reproducible build, enable multithreading
 	test -z "${SOURCE_DATE_EPOCH}" && compress="$compress -T0"
 	;;
-xz)	compress="xz --check=crc32"
+xz)	compress="xz ${compresslevel} --check=crc32"
 	# If we're not doing a reproducible build, enable multithreading
 	test -z "${SOURCE_DATE_EPOCH}" && compress="$compress --threads=0"
 	;;
 bzip2|lzma|lzop)
-	# no parameters needed
+	compress="${compress} ${compresslevel}"
 	;;
 *)	echo "W: Unknown compression command ${compress}" >&2 ;;
 esac
