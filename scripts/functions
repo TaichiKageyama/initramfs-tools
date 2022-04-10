@@ -99,13 +99,13 @@ maybe_break()
 			else
 				opts="-v"
 			fi
-			modprobe ${opts} -a i8042 atkbd ehci-pci ehci-orion \
+			/sbin/modprobe ${opts} -a i8042 atkbd ehci-pci ehci-orion \
 				 ehci-hcd ohci-hcd ohci-pci uhci-hcd usbhid xhci \
 				 xhci-pci xhci-hcd
 			sleep 2
 			for modalias in /sys/bus/hid/devices/*/modalias; do
 				if [ -f "${modalias}" ]; then
-					modprobe ${opts} -b "$(cat "${modalias}")"
+					/sbin/modprobe ${opts} -b "$(cat "${modalias}")"
 				fi
 			done
 		fi
@@ -139,7 +139,7 @@ load_modules()
 				continue
 			fi
 			# shellcheck disable=SC2086
-			modprobe $m
+			/sbin/modprobe $m
 		done < /conf/modules
 	fi
 }
