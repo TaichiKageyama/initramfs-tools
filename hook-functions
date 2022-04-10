@@ -675,11 +675,15 @@ auto_add_modules()
 		;;
 		net)
 			copy_modules_dir kernel/drivers/net \
-				appletalk arcnet bonding can dummy.ko \
-				hamradio hippi ifb.ko irda macvlan.ko \
-				macvtap.ko pcmcia sb1000.ko team tokenring \
-				tun.ko usb veth.ko wan wimax wireless \
-				xen-netback.ko
+				appletalk arcnet bonding can cdc-phonet.ko \
+				cdc_mbim.ko cdc_subset.ko cx82310_eth.ko \
+				dummy.ko gl620a.ko hamradio hippi hso.ko \
+				huawei_cdc_ncm.ko ifb.ko ipheth.ko irda \
+				kalmia.ko lg-vl600.ko macvlan.ko macvtap.ko \
+				net1080.ko pcmcia plusb.ko qmi_wwan.ko \
+				sb1000.ko sierra_net.ko team tokenring tun.ko \
+				veth.ko wan wimax wireless xen-netback.ko \
+				zaurus.ko
 
 			# Required to initialize Ethernet (FEC) on ARM64 iMX8M
 			# devices.
