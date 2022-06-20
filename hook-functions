@@ -692,6 +692,7 @@ auto_add_modules()
 		;;
 		scsi)
 			copy_modules_dir kernel/drivers/scsi
+			copy_modules_dir kernel/drivers/ufs
 			modules="$modules mptfc mptsas mptscsih mptspi zfcp"
 		;;
 		ata)
