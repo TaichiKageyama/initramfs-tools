@@ -575,11 +575,6 @@ dep_add_modules()
 		modules="$modules virtio_pci virtio_mmio"
 	fi
 
-	if [ -e /sys/bus/i2o/devices/ ]; then
-		force_load i2o_block
-		force_load i2o_config
-	fi
-
 	if [ -e /sys/bus/ps3_system_bus/ ]; then
 		modules="$modules ps3disk ps3rom ps3-gelic ps3_sys_manager"
 	fi
@@ -603,7 +598,7 @@ auto_add_modules()
 	local modules=
 
 	if [ "$#" -eq 0 ] ; then
-		set -- base net ide scsi block ata i2o dasd ieee1394 firewire mmc usb_storage fb
+		set -- base net ide scsi block ata dasd firewire mmc usb_storage fb
 	fi
 
 	for arg in "$@" ; do
@@ -710,14 +705,8 @@ auto_add_modules()
 		ubi)
 			modules="$modules deflate zlib lzo ubi ubifs"
 		;;
-		ieee1394)
-			modules="$modules ohci1394 sbp2"
-		;;
 		firewire)
 			modules="$modules firewire-ohci firewire-sbp2"
-		;;
-		i2o)
-			modules="$modules i2o_block"
 		;;
 		dasd)
 			modules="$modules dasd_diag_mod dasd_eckd_mod dasd_fba_mod"
