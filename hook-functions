@@ -649,6 +649,9 @@ auto_add_modules()
 				hid-wiimote.ko hid-zydacron.ko
 			# needed to access keyboard on some ChromeOS devices
 			modules="$modules cros_ec_spi"
+			# needed to access keyboard in Gen2 Hyper-V virtual
+			# machines (e.g. full disk encryption scenarios)
+			modules="$modules hyperv-keyboard"
 
 			# Any of these might be needed by other drivers
 			copy_modules_dir kernel/drivers/bus
