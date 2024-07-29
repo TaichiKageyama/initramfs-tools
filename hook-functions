@@ -182,11 +182,12 @@ copy_file() {
 
 	mkdir -p "${DESTDIR}/${target%/*}"
 
-	if [ -h "${src}" ]; then
-		# We don't need to replicate a chain of links completely;
-		# just link directly to the ultimate target
-		link_target="$(readlink -f "${src}")" || return $(($? + 1))
-
+	# Check whether source or one of its ancestors is a symlink.
+	# If so, copy the symlink target and make the target a symlink
+	# too.  We don't need to replicate a chain of links completely;
+	# just link directly to the ultimate target.
+	link_target="$(readlink -f "${src}")" || return $(($? + 1))
+	if [ "${link_target}" != "$(realpath -s "$src")" ]; then
 		# Update source for the copy
 		src="${link_target}"
 
