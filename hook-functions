@@ -172,6 +172,10 @@ copy_file() {
 		target="${target}/${src##*/}"
 	fi
 
+	# Canonicalise target to be absolute, so the comparisons below
+	# will work
+	target="$(realpath -ms "/${target}")" || return 2
+
 	# Canonicalise usr-merged target directories
 	case "${target}" in
 	/bin/* | /lib* | /sbin/*) target="/usr${target}" ;;
