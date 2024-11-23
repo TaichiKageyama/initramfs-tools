@@ -118,6 +118,10 @@ for x in $(cat /proc/cmdline); do
 	initramfs.runsize=*)
 		RUNSIZE="${x#initramfs.runsize=}"
 		;;
+	rbdroot=*)
+		RBDROOT="${x#rbdroot=}"
+		BOOT=rbd
+		;;
 	ip=*)
 		IP="${x#ip=}"
 		;;

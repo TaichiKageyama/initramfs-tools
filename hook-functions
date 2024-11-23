@@ -603,7 +603,7 @@ auto_add_modules()
 	local modules=
 
 	if [ "$#" -eq 0 ] ; then
-		set -- base net ide scsi block ata dasd firewire mmc usb_storage fb
+		set -- base net ide scsi block ata dasd firewire mmc usb_storage fb rbd
 	fi
 
 	for arg in "$@" ; do
@@ -733,6 +733,9 @@ auto_add_modules()
 			# For panel/backlight on MNT Reform 2
 			modules="$modules pwm_imx27 nwl-dsi ti-sn65dsi86 imx-dcss"
 			modules="$modules mux-mmio mxsfb imx8mq-interconnect"
+		;;
+		rbd)
+			modules="$modules rbd aes cbc"
 		;;
 		esac
 	done

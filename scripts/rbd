@@ -1,0 +1,205 @@
+rbd_top()
+{
+	if [ "${rbd_top_used}" != "yes" ]; then
+		[ "$quiet" != "y" ] && log_begin_msg "Running /scripts/rbd-top"
+		run_scripts /scripts/rbd-top
+		[ "$quiet" != "y" ] && log_end_msg
+	fi
+	rbd_top_used=yes
+}
+
+rbd_premount()
+{
+	if [ "${rbd_premount_used}" != "yes" ]; then
+		[ "$quiet" != "y" ] && log_begin_msg "Running /scripts/rbd-premount"
+		run_scripts /scripts/rbd-premount
+		[ "$quiet" != "y" ] && log_end_msg
+	fi
+	rbd_premount_used=yes
+}
+
+rbd_bottom()
+{
+	if [ "${rbd_premount_used}" = "yes" ] || [ "${rbd_top_used}" = "yes" ]; then
+		[ "$quiet" != "y" ] && log_begin_msg "Running /scripts/rbd-bottom"
+		run_scripts /scripts/rbd-bottom
+		[ "$quiet" != "y" ] && log_end_msg
+	fi
+	rbd_premount_used=no
+	rbd_top_used=no
+}
+
+# parse rbd bootargs and mount rbd
+rbd_mount_parse()
+{
+	local param=$1
+	local mons user key tmp pool image snap part opts IFS
+	# param=<mons>:<user>/<key>:<pool>/<image>[@<snap>]:[<part>]:[<opts>]:[another rbd..]
+	if [ -n "${param}" ]; then
+		local i=1
+		local OLD_IFS=${IFS}
+		IFS=":"
+		for arg in ${param} ; do
+			case ${i} in
+				1)
+					mons=$(echo ${arg} | tr ";" ":")
+					;;
+				2)
+					user=${arg%%/*}
+					key=${arg##*/}
+					if [ "${key}" == "secret" ]; then
+						key="your_key"
+					fi
+					;;
+				3)
+					tmp=${arg%%@*}
+					pool=${tmp%%/*}
+					image=${tmp##*/}
+					if [ ${arg#*@*} != ${arg} ] ; then
+						snap=${arg##*@}
+					else
+						snap=""
+					fi
+
+					;;
+				4)
+					part=${arg}
+					;;
+				5)
+					opts=${arg}
+					rbd_mount $mons $user $key $pool $image "$snap" "$part" "$opts" $rootmnt
+					pool="" image="" snap="" part="" opts=""
+					;;
+                                6)
+                                        tmp=${arg%%@*}
+                                        pool=${tmp%%/*}
+                                        image=${tmp##*/}
+                                        if [ ${arg#*@*} != ${arg} ] ; then
+                                                snap=${arg##*@}
+                                        else
+                                                snap=""
+                                        fi
+
+                                        ;;
+                                7)
+                                        part=${arg}
+                                        ;;
+                                8)
+                                        opts=${arg}
+					rbd_mount $mons $user $key $pool $image "$snap" "$part" "$opts"
+                                        ;;
+			esac
+			i=$((${i} + 1))
+		done
+		IFS=${OLD_IFS}
+	fi
+}
+
+rbd_mount()
+{
+	local mons=$1 user=$2 key=$3 pool=$4
+	local image=$5 snap=$6 part=$7 opts=$8
+	local mnt_point=$9
+
+	if [ ${readonly} = y ]; then
+		roflag='ro,noload'
+	else
+		roflag='rw'
+	fi
+
+        # the kernel will reject writes to add if add_single_major exists
+        local rbd_bus
+        if [ -e /sys/bus/rbd/add_single_major ]; then
+                rbd_bus=/sys/bus/rbd/add_single_major
+        elif [ -e /sys/bus/rbd/add ]; then
+                rbd_bus=/sys/bus/rbd/add
+        else
+                echo "ERROR: /sys/bus/rbd/add does not exist"
+                return 1
+        fi
+
+        # tell the kernel rbd client to map the block device
+        echo "${mons} name=${user},secret=${key} ${pool} ${image} ${snap}" > ${rbd_bus}
+        # figure out where the block device appeared
+        local dev=$(ls /dev/rbd* | grep '/dev/rbd[0-9]*$' | tail -n 1)
+        # add part if set
+        if [ ${part} ]; then
+                dev=${dev}p${part}
+        fi
+        FSTYPE=$(get_fstype "${dev}")
+
+	# Skip mount
+	if [ "$mnt_point" == "" ]; then
+		return
+	fi
+
+	rbd_premount
+	# mount the fs
+
+	(lsmod | grep ${FSTYPE}) || modprobe ${FSTYPE}
+        mount -t ${FSTYPE} -o ${roflag},${opts} $dev ${mnt_point}
+}
+
+rbd_mount_root_impl()
+{
+	configure_networking
+
+	# get rbd root from dhcp
+	if [ "x${RBDROOT}" = "xauto" ]; then
+		RBDROOT=${ROOTPATH}
+	fi
+
+	rbd_mount_parse "$RBDROOT"
+}
+
+# RBD root mounting
+rbd_mount_root()
+{
+	rbd_top
+
+	modprobe rbd
+	# For DHCP
+	modprobe af_packet
+
+	wait_for_udev 10
+
+	# Default delay is around 180s
+	delay=${ROOTDELAY:-180}
+
+	# loop until rbd mount succeeds
+	rbd_mount_root_impl
+	rbd_retry_count=0
+	while [ ${rbd_retry_count} -lt ${delay} ] \
+		&& ! chroot "${rootmnt}" test -x "${init}" ; do
+		[ "$quiet" != "y" ] && log_begin_msg "Retrying rbd mount"
+		/bin/sleep 1
+		rbd_mount_root_impl
+		rbd_retry_count=$(( ${rbd_retry_count} + 1 ))
+		[ "$quiet" != "y" ] && log_end_msg
+	done
+}
+
+mountroot()
+{
+	rbd_mount_root
+}
+
+mount_top()
+{
+	# Note, also called directly in case it's overridden.
+	rbd_top
+}
+
+mount_premount()
+{
+	# Note, also called directly in case it's overridden.
+	rbd_premount
+}
+
+mount_bottom()
+{
+	# Note, also called directly in case it's overridden.
+	rbd_bottom
+}
+
+
